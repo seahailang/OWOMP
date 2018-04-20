@@ -27,7 +27,24 @@ scipy
 模型文件
 
 包含模型的主体文件,模型搭建的参数由Config类决定
-
+```
+class Model(object)
+def __int__(self,iterator,config,**argv):
+	...
+def builf_graph(self):
+	...
+	self.logits = ...
+	return self.logits
+def losses(self):
+	return losses
+@property
+def trainable_variable(self):
+	return variables
+def compute_gradients(self,losses,val_list):
+	return grads_and_vars
+def apply_gradients(self,grads_and_vars,global_step):
+	return run_op
+```
 
 ## model_utils.py
 用于实现特定任务中的一些特定功能,比如图像识别中的预处理操作
