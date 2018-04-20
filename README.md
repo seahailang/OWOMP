@@ -49,6 +49,10 @@ def apply_gradients(self,grads_and_vars,global_step):
 ## model_utils.py
 用于实现特定任务中的一些特定功能,比如图像识别中的预处理操作
 
+
+## net_utils.py
+网络的基础模块,公用库
+
 ```
 class _Base_Module(object):
     def __init__(self, layers):
