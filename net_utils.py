@@ -39,7 +39,7 @@ class _Base_Module(object):
     @property
     def trainable_variables(self):
         for i in range(len(self.layers)):
-            self._trainable_variables.append(self.layers[i].trainable_variables)
+            self._trainable_variables.extend(self.layers[i].trainable_variables)
             return self._trainable_variables
 
 
@@ -76,7 +76,6 @@ class Block(_Base_Module):
         X = tf.concat(X_,axis=-1)
         return X
 
-
 # model
 class Base_Model(object):
     def __init__(self,iterator,config,**kwargs):
@@ -109,7 +108,7 @@ class Base_Model(object):
         else:
             self.X = iterator.get_next()
         self.gpu_config = tf.ConfigProto()
-        config.gpu_opyions.allow_growth = True
+        self.gpu_config.gpu_options.allow_growth = True
         self.ckpt = config.ckpt
         self.ckpt_name = config.ckpt_name
 
@@ -131,7 +130,6 @@ class Base_Model(object):
             global_step = self.global_step
         apply_op = self.optimizer.apply_gradients(grads_and_vars,global_step)
         return apply_op
-
     def saver(self,var_list=None):
         return tf.train.Saver(var_list=var_list,filename=self.ckpt_name)
 
@@ -198,8 +196,6 @@ def train_val(model,handle_holder,train_iterator,val_iterator):
                 print('validation accuracy:\t%f'%accuracy_score(groud_truth,predictions))
                 saver.save(sess,model.ckpt,global_step=g,latest_filename=model.ckpt_name)
 
-def train_test():
-    pass
 
 def train(model):
     logit = model.build_graph()
@@ -221,6 +217,7 @@ def train(model):
             g, l, _ = sess.run([global_step, loss, run_op])
             if g % model.val_steps == 0:
                 print('%d,batch_loss:\t %f' % (g, l))
+                saver.save(sess,model.ckpt,global_step=g,latest_filename=model.ckpt_name)
 
 def inference(model):
     logit = model.build_graph()
